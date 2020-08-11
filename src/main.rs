@@ -5,13 +5,30 @@ use colored::*;
 use crate::entities::{Maze, Position};
 use std::collections::HashSet;
 use std::rc::Rc;
+use clap::{Arg, App};
 
 mod entities;
 mod maze_reader;
 
 fn main() {
-    println!("{}", "Running maze...".green().bold());
-    let filename = "maze3.txt";
+    let matches = App::new("Deep First Search in Rust")
+        .version("0.1")
+        .author("Manuel Doncel Martos. <manueldoncelmartos@gmail.com>")
+        .about("DFS in Rust")
+        .arg(Arg::with_name("maze")
+            .short("m")
+            .long("maze")
+            .value_name("FILE")
+            .help("Sets the maze to be solved")
+            .takes_value(true))
+        .arg(Arg::with_name("v")
+            .short("v")
+            .multiple(true)
+            .help("Sets the level of verbosity"))
+        .get_matches();
+
+    let filename = matches.value_of("maze").unwrap_or("./maze1.txt");
+    println!("{} {}", "Running maze ".green().bold(), filename);
 
     let maze = fs::read_to_string(filename)
         .expect("Something went wrong reading the file");
@@ -53,7 +70,7 @@ impl fmt::Display for MazeSolution {
                 let _write = if c == &false {
                     _write.and( write!(f, "{}", "#".blue().bold().on_blue()))
                 } else if self.maze.start == Position::of(i, j) {
-                    _write.and( write!(f, "{}", "@".green().bold().on_green()))
+                    _write.and( write!(f, "{}", "@".yellow().bold().on_green()))
                 } else if self.maze.exit == Position::of(i, j) {
                     _write.and( write!(f, "{}", "X".red().bold().on_green()))
                 } else {
