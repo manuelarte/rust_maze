@@ -6,6 +6,7 @@ use crate::entities::{Maze, Position};
 use std::collections::HashSet;
 use std::rc::Rc;
 use clap::{Arg, App};
+use crate::algorithms::{Queue, Stack};
 
 mod entities;
 mod maze_reader;
@@ -21,22 +22,32 @@ fn main() {
             .value_name("FILE")
             .help("Sets the maze to be solved")
             .takes_value(true))
-        .arg(Arg::with_name("v")
-            .short("v")
-            .multiple(true)
-            .help("Sets the level of verbosity"))
+        .arg(Arg::with_name("algorithm")
+            .short("a")
+            .long("algorithm")
+            .value_name("algorithm")
+            .help("Sets the algorithm to be used.")
+            .possible_value("dfs")
+            .possible_value("bfs")
+            .takes_value(true))
         .get_matches();
 
     let filename = matches.value_of("maze").unwrap_or("./maze1.txt");
-    println!("{} {}", "Running maze ".green().bold(), filename);
+    let algorithm = matches.value_of("algorithm").unwrap_or("dfs");
+    println!("{} {} with algorithm {}", "Running maze ", filename.yellow().bold(), algorithm.green
+    ().bold());
 
     let maze = fs::read_to_string(filename)
         .expect("Something went wrong reading the file");
     let maze = maze_reader::create(maze);
     println!("{}:\r\n{}", "Maze to solve", maze);
-    let (exit_node, seen) = algorithms::dfs(&maze);
+    //let (exit_node, seen) = algorithms::dfs(&maze);
+    let (exit_node, seen) = if algorithm == "dfs" {
+        algorithms::search(&maze, Queue::new())
+    } else {
+        algorithms::search(&maze, Stack::new())
+    };
     println!("{}", "Solution found!".green().bold());
-    println!("Exit Node: {}", exit_node);
     let mut path = HashSet::new();
     let mut current_node = Box::new(exit_node);
     while current_node.parent != None {
@@ -49,8 +60,7 @@ fn main() {
         path,
         seen
     };
-    println!("{}", maze_solution)
-    
+    println!("{}", maze_solution);
 }
 
 struct MazeSolution {

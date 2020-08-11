@@ -2,22 +2,89 @@ use std::collections::{HashSet, VecDeque};
 use std::hash::Hasher;
 use std::rc::Rc;
 use std::fmt;
+use crate::entities::{Maze, Position};
 
-pub fn dfs<'a>(maze: &crate::entities::Maze) -> (Node, HashSet<crate::entities::Position>) {
-    let mut frontier: VecDeque<Box<Node>> = VecDeque::new();
-    let mut explored: HashSet<crate::entities::Position> = HashSet::new();
+pub trait Frontier {
+    fn push(&mut self, value: Box<Node>);
+    fn append(&mut self, other: &mut VecDeque<Box<Node>>);
+    fn pop(&mut self) -> Option<Box<Node>>;
+    fn is_empty(&mut self) -> bool;
+}
+
+pub struct Queue {
+    vector: VecDeque<Box<Node>>
+}
+
+impl Queue {
+    pub fn new() -> Queue {
+        Queue {
+            vector: VecDeque::new()
+        }
+    }
+}
+
+impl Frontier for Queue {
+    fn push(&mut self, value: Box<Node>) {
+        self.vector.push_back(value)
+    }
+
+    fn append(&mut self, other: &mut VecDeque<Box<Node>>) {
+        self.vector.append(other)
+    }
+
+    fn pop(&mut self) -> Option<Box<Node>> {
+        self.vector.pop_back()
+    }
+
+    fn is_empty(&mut self) -> bool {
+        self.vector.is_empty()
+    }
+}
+
+pub struct Stack {
+    vector: VecDeque<Box<Node>>
+}
+
+impl Frontier for Stack {
+    fn push(&mut self, value: Box<Node>) {
+        self.vector.push_back(value)
+    }
+
+    fn append(&mut self, other: &mut VecDeque<Box<Node>>) {
+        self.vector.append(other)
+    }
+
+    fn pop(&mut self) -> Option<Box<Node>> {
+        self.vector.pop_front()
+    }
+
+    fn is_empty(&mut self) -> bool {
+        self.vector.is_empty()
+    }
+}
+
+impl Stack {
+    pub fn new() -> Stack {
+        Stack {
+            vector: VecDeque::new()
+        }
+    }
+}
+
+pub fn search<'a, T: Frontier>(maze: &Maze, mut frontier: T) -> (Node, HashSet<Position>) {
+    let mut explored: HashSet<Position> = HashSet::new();
 
     let parent = Node {
         parent: None,
         position: maze.start
     };
-    frontier.push_back(Box::new(parent));
+    frontier.push(Box::new(parent));
 
     loop {
         if frontier.is_empty() {
             panic!("No solution found!")
         }
-        let current: Node = *frontier.pop_back().expect("There must be a node here");
+        let current: Node = *frontier.pop().expect("There must be a node here");
         let position = current.position;
         if current.position == maze.exit {
             break (current, explored);
@@ -25,11 +92,11 @@ pub fn dfs<'a>(maze: &crate::entities::Maze) -> (Node, HashSet<crate::entities::
             if !explored.contains(&current.position) {
                 let neighbours: Vec<Box<Node>> = maze.get_neighbours(current.position).iter()
                     .map
-                (|pos|
-                    Box::new(Node {
-                        parent: Some(Rc::new(current.to_owned())),
-                        position: *pos
-                })).collect();
+                    (|pos|
+                        Box::new(Node {
+                            parent: Some(Rc::new(current.to_owned())),
+                            position: *pos
+                        })).collect();
                 frontier.append(&mut VecDeque::from(neighbours));
             }
         }
