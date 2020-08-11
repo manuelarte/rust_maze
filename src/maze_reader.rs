@@ -12,7 +12,7 @@ pub fn create(string: String) -> crate::entities::Maze {
             if c == '@' {
                 start = Some(crate::entities::Position::of(i, j));
             }
-            if c == 'F' {
+            if c == 'X' {
                 exit = Some(crate::entities::Position::of(i, j));
             }
             j += 1; 

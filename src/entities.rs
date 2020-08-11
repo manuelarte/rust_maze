@@ -1,5 +1,6 @@
 use std::fmt;
 use std::hash::Hasher;
+use colored::*;
 
 pub struct Maze {
     pub grid: Vec<Vec<bool>>,
@@ -35,28 +36,26 @@ impl Maze {
 impl fmt::Display for Maze {
 
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> { 
-        let mut string = String::from("");
         let mut i = 0;
+        let _write = write!(f, "{}", "");
         for row in &self.grid {
             let mut j = 0;
             for c in row {
-                let r = if c == &false { 
-                    '#' 
+                let _write = if c == &false {
+                    _write.and( write!(f, "{}", "#".blue().bold().on_blue()))
                 } else if self.start == Position::of(i, j) {
-                    'S'
+                    _write.and( write!(f, "{}", "@".green().bold().on_white()))
                 } else if self.exit == Position::of(i, j) {
-                    'E'
-                } else { 
-                    ' ' 
+                    _write.and( write!(f, "{}", "X".red().bold().on_white()))
+                } else {
+                    _write.and( write!(f, "{}", " ".on_white()))
                 };
-
-                string.push(r);
                 j += 1;
             }
             i += 1;
-            string.push_str("\n");
+            let _write = _write.and( write!(f, "{}", "\r\n"));
         }
-        write!(f, "{}", string)
+        _write
     }
 }
 
@@ -101,7 +100,6 @@ impl fmt::Display for Position {
 
 #[cfg(test)]
 mod tests {
-    // Note this useful idiom: importing names from outer (for mod tests) scope.
     use super::*;
 
     #[test]
