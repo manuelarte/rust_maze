@@ -15,7 +15,6 @@ fn main() {
     let matches = App::new("Deep and Breadth First Search in Rust")
         .version("0.1")
         .author("Manuel Doncel Martos. <manueldoncelmartos@gmail.com>")
-        .about("DFS in Rust")
         .arg(Arg::with_name("maze")
             .short("m")
             .long("maze")

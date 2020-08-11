@@ -23,8 +23,8 @@ Use the option -m to specify your custom maze. Right now there are maze1, maze2,
 
 ### Options ###
 
--a, --algorithm <algorithm>    Sets the algorithm to be used. [possible values: dfs, bfs]
--m, --maze <FILE>              Sets the maze to be solved
+* -a, --algorithm <algorithm>    Sets the algorithm to be used. [possible values: dfs, bfs]
+* -m, --maze <FILE>              Sets the maze to be solved
 
 ## Contact ##
 
