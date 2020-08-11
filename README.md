@@ -29,6 +29,7 @@ Use the option -m to specify your custom maze. Right now there are maze1, maze2,
 ## Demo ##
 
 Youtube video:
+
 [![Demo](https://img.youtube.com/vi/sP8r7yTBRaw/0.jpg)](https://youtu.be/sP8r7yTBRaw)
 
 ## Contact ##
