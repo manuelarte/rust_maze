@@ -1,4 +1,4 @@
-# Deep and Breadth First Search in Rust #
+# Depth and Breadth First Search in Rust #
 
 ## Introduction ##
 
