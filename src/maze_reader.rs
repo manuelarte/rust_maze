@@ -2,23 +2,19 @@ pub fn create(string: String) -> crate::entities::Maze {
     let mut start: Option<crate::entities::Position> = None;
     let mut exit: Option<crate::entities::Position> = None;
     let mut grid: Vec<Vec<bool>> = Vec::new();
-    let mut i = 0;
-    for s in string.split("\r\n") {
-        let mut j = 0;
+    for (i, s) in string.split("\r\n").enumerate() {
         let mut v: Vec<bool> = Vec::new();
-        for c in s.chars() {
-            let val = if c == '#' { false } else { true };
+        for (j, c) in s.chars().enumerate() {
+            let val = c != '#';
             v.push(val);
             if c == '@' {
-                start = Some(crate::entities::Position::of(i, j));
+                start = Some(crate::entities::Position::of(i as u8, j as u8));
             }
             if c == 'X' {
-                exit = Some(crate::entities::Position::of(i, j));
+                exit = Some(crate::entities::Position::of(i as u8, j as u8));
             }
-            j += 1; 
         }
         grid.push(v);
-        i += 1;
     }
 
     let start = match start {

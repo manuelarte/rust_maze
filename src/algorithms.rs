@@ -71,7 +71,7 @@ impl Stack {
     }
 }
 
-pub fn search<'a, T: Frontier>(maze: &Maze, mut frontier: T) -> (Node, HashSet<Position>) {
+pub fn search<T: Frontier>(maze: &Maze, mut frontier: T) -> (Node, HashSet<Position>) {
     let mut explored: HashSet<Position> = HashSet::new();
 
     let parent = Node {

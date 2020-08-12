@@ -33,13 +33,13 @@ fn main() {
 
     let filename = matches.value_of("maze").unwrap_or("./maze1.txt");
     let algorithm = matches.value_of("algorithm").unwrap_or("dfs");
-    println!("{} {} with algorithm {}", "Running maze ", filename.yellow().bold(), algorithm.green
+    println!("Running maze {} with algorithm {}", filename.yellow().bold(), algorithm.green
     ().bold());
 
     let maze = fs::read_to_string(filename)
         .expect("Something went wrong reading the file");
     let maze = maze_reader::create(maze);
-    println!("{}:\r\n{}", "Maze to solve", maze);
+    println!("Maze to solve:\r\n{}", maze);
     //let (exit_node, seen) = algorithms::dfs(&maze);
     let (exit_node, seen) = if algorithm == "dfs" {
         algorithms::search(&maze, Queue::new())
@@ -71,31 +71,27 @@ struct MazeSolution {
 impl fmt::Display for MazeSolution {
 
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
-        let mut i = 0;
-        let _write = write!(f, "{}", "");
-        for row in &self.maze.grid {
-            let mut j = 0;
-            for c in row {
+        let _write = write!(f, "");
+        for (i, row) in self.maze.grid.iter().enumerate() {
+            for (j, c) in row.iter().enumerate() {
                 let _write = if c == &false {
                     _write.and( write!(f, "{}", "#".blue().bold().on_blue()))
-                } else if self.maze.start == Position::of(i, j) {
+                } else if self.maze.start == Position::of(i as u8, j as u8) {
                     _write.and( write!(f, "{}", "@".yellow().bold().on_green()))
-                } else if self.maze.exit == Position::of(i, j) {
+                } else if self.maze.exit == Position::of(i as u8, j as u8) {
                     _write.and( write!(f, "{}", "X".red().bold().on_green()))
                 } else {
-                    if self.seen.contains(&Position::of(i, j)) && !self.path.contains
-                    (&Position::of(i, j)) {
+                    if self.seen.contains(&Position::of(i as u8, j as u8)) && !self.path.contains
+                    (&Position::of(i as u8, j as u8)) {
                         _write.and(write!(f, "{}", " ".on_red()))
-                    } else if self.path.contains(&Position::of(i, j)) {
+                    } else if self.path.contains(&Position::of(i as u8, j as u8)) {
                         _write.and( write!(f, "{}", " ".on_green()))
                     } else {
                         _write.and( write!(f, "{}", " ".on_white()))
                     }
                 };
-                j += 1;
             }
-            i += 1;
-            let _write = _write.and( write!(f, "{}", "\r\n"));
+            let _write = _write.and( write!(f, "\r\n"));
         }
         _write
     }
