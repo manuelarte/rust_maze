@@ -71,15 +71,16 @@ impl Stack {
     }
 }
 
-pub fn dfs(maze: &Maze) -> (Node, HashSet<Position>) {
+pub fn dfs(maze: &Maze) -> (Option<Node>, HashSet<Position>) {
     search(maze, Queue::new())
 }
 
-pub fn bfs(maze: &Maze) -> (Node, HashSet<Position>) {
+pub fn bfs(maze: &Maze) -> (Option<Node>, HashSet<Position>) {
     search(maze, Stack::new())
 }
 
-fn search<T: Frontier>(maze: &Maze, mut frontier: T) -> (Node, HashSet<Position>) {
+/// Returns exit node and explored nodes
+fn search<T: Frontier>(maze: &Maze, mut frontier: T) -> (Option<Node>, HashSet<Position>) {
     let mut explored: HashSet<Position> = HashSet::new();
 
     let parent = Node {
@@ -90,12 +91,12 @@ fn search<T: Frontier>(maze: &Maze, mut frontier: T) -> (Node, HashSet<Position>
 
     loop {
         if frontier.is_empty() {
-            panic!("No solution found!")
+            break (Option::None, explored);
         }
         let current: Node = *frontier.pop().expect("There must be a node here");
         let position = current.position;
         if current.position == maze.exit {
-            break (current, explored);
+            break (Option::from(current), explored);
         } else if !explored.contains(&current.position) {
             let neighbours: Vec<Box<Node>> = maze.get_neighbours(current.position).iter()
                 .map

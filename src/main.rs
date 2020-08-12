@@ -68,20 +68,27 @@ fn main() {
         DFS => algorithms::dfs(&maze),
         BFS => algorithms::bfs(&maze)
     };
-    println!("{}", "Solution found!".green().bold());
-    let mut path = HashSet::new();
-    let mut current_node = Box::new(exit_node);
-    while current_node.parent != None {
-        let parent = Rc::try_unwrap(current_node.parent.expect("")).expect("");
-        path.insert(parent.position);
-        current_node = Box::new(parent);
-    }
+    let path = if let Some(exit_node) = exit_node {
+        println!("{}", "Solution found \u{263A}!".green().bold());
+        let mut path = HashSet::new();
+        let mut current_node = Box::new(exit_node);
+        while current_node.parent != None {
+            let parent = Rc::try_unwrap(current_node.parent.expect("")).expect("");
+            path.insert(parent.position);
+            current_node = Box::new(parent);
+        }
+        path
+    } else {
+        println!("{}", "No solution found!".red().bold());
+        HashSet::new()
+    };
     let maze_solution = MazeSolution {
         maze: Box::new(maze),
         path,
         seen
     };
     println!("{}", maze_solution);
+
 }
 
 struct MazeSolution {
