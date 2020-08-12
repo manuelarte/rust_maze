@@ -71,7 +71,15 @@ impl Stack {
     }
 }
 
-pub fn search<T: Frontier>(maze: &Maze, mut frontier: T) -> (Node, HashSet<Position>) {
+pub fn dfs(maze: &Maze) -> (Node, HashSet<Position>) {
+    search(maze, Queue::new())
+}
+
+pub fn bfs(maze: &Maze) -> (Node, HashSet<Position>) {
+    search(maze, Stack::new())
+}
+
+fn search<T: Frontier>(maze: &Maze, mut frontier: T) -> (Node, HashSet<Position>) {
     let mut explored: HashSet<Position> = HashSet::new();
 
     let parent = Node {

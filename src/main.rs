@@ -6,10 +6,33 @@ use crate::entities::{Maze, Position};
 use std::collections::HashSet;
 use std::rc::Rc;
 use clap::{Arg, App};
-use crate::algorithms::{Queue, Stack};
+use crate::Algorithm::{DFS, BFS};
 
 mod entities;
 mod maze_reader;
+
+#[derive(Debug)]
+enum Algorithm {
+    DFS,
+    BFS,
+}
+
+impl std::str::FromStr for Algorithm {
+    type Err = String;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "DFS" => Ok(DFS),
+            "BFS" => Ok(BFS),
+            _ => Err(format!("'{}' is not a valid value for Algorithm", s)),
+        }
+    }
+}
+
+impl fmt::Display for Algorithm {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
 
 fn main() {
     let matches = App::new("Deep and Breadth First Search in Rust")
@@ -32,19 +55,18 @@ fn main() {
         .get_matches();
 
     let filename = matches.value_of("maze").unwrap_or("./maze1.txt");
-    let algorithm = matches.value_of("algorithm").unwrap_or("dfs");
-    println!("Running maze {} with algorithm {}", filename.yellow().bold(), algorithm.green
-    ().bold());
+    let algorithm: Algorithm = matches.value_of("algorithm").unwrap_or("dfs").to_uppercase()
+        .parse().unwrap();
+    println!("Running maze {} with algorithm {}", filename.yellow().bold(), algorithm.to_string
+    ().green().bold());
 
     let maze = fs::read_to_string(filename)
         .expect("Something went wrong reading the file");
     let maze = maze_reader::create(maze);
     println!("Maze to solve:\r\n{}", maze);
-    //let (exit_node, seen) = algorithms::dfs(&maze);
-    let (exit_node, seen) = if algorithm == "dfs" {
-        algorithms::search(&maze, Queue::new())
-    } else {
-        algorithms::search(&maze, Stack::new())
+    let (exit_node, seen) = match algorithm {
+        DFS => algorithms::dfs(&maze),
+        BFS => algorithms::bfs(&maze)
     };
     println!("{}", "Solution found!".green().bold());
     let mut path = HashSet::new();
@@ -85,7 +107,7 @@ impl fmt::Display for MazeSolution {
                     (&Position::of(i as u8, j as u8)) {
                         _write.and(write!(f, "{}", " ".on_red()))
                     } else if self.path.contains(&Position::of(i as u8, j as u8)) {
-                        _write.and( write!(f, "{}", " ".on_green()))
+                        _write.and( write!(f, "{}", "\u{00B7}".on_green()))
                     } else {
                         _write.and( write!(f, "{}", " ".on_white()))
                     }
