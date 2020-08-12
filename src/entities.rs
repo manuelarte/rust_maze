@@ -15,24 +15,25 @@ impl Maze {
         let row_end_index = if usize::from(position.row) == self.grid.len()-1 { 1 } else { 2 };
         let column_start_index: isize = if position.column == 0 { 0 } else { -1 };
         let column_end_index = if usize::from(position.column) < self.grid[usize::from(position
-            .row)].len()-1 { 2 } else { 1 };
+            .row)].len()-1 { 2 } else
+        { 1 };
         for i in row_start_index..row_end_index {
             let row = isize::from(position.row) + i;
             for j in column_start_index..column_end_index {
                 let column = isize::from(position.column) + j;
-                if (i != 0 && j == 0) || (i == 0 && j != 0) && self.grid[row as usize][column as usize] {
-                    children.push(Position::of(row as u8, column as u8))
+                if ((i != 0 && j == 0) || (i == 0 && j != 0))
+                    && self.grid[row as usize][column as usize] {
+                        children.push(Position::of(row as u8, column as u8))
                 }
             }
-            
-        }    
+        }
         children
     }
 }
 
 impl fmt::Display for Maze {
 
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> { 
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
         let _write = write!(f, "");
         for (i, row) in self.grid.iter().enumerate() {
             for (j, c) in row.iter().enumerate() {
@@ -69,7 +70,7 @@ impl Position {
 
 impl PartialEq for Position {
 
-    fn eq(&self, other: &Position) -> bool { 
+    fn eq(&self, other: &Position) -> bool {
         self.row == other.row && self.column == other.column
     }
 }

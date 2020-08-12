@@ -27,16 +27,6 @@ pub fn create(string: String) -> crate::entities::Maze {
         _ => panic!("End position not found"),
     };
 
-    /*
-    let mut player;
-    let grid: Vec<Vec<bool>> = lines.split("\n")
-        .map(|s| 
-            s.chars().map(|c| {
-                if c == '#' { false } else { true }
-            }).collect())
-        .collect();
-    */
-
     crate::entities::Maze {
         grid,
         start,

@@ -104,7 +104,7 @@ impl fmt::Display for MazeSolution {
                     _write.and( write!(f, "{}", "X".red().bold().on_green()))
                 } else {
                     let position = Position::of(i as u8, j as u8);
-                    if self.seen.contains(&Position::of(i as u8, j as u8)) && !self.path.contains
+                    if self.seen.contains(&position) && !self.path.contains
                     (&position) {
                         _write.and(write!(f, "{}", " ".on_red()))
                     } else if self.path.contains(&position) {
