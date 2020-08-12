@@ -103,10 +103,11 @@ impl fmt::Display for MazeSolution {
                 } else if self.maze.exit == Position::of(i as u8, j as u8) {
                     _write.and( write!(f, "{}", "X".red().bold().on_green()))
                 } else {
+                    let position = Position::of(i as u8, j as u8);
                     if self.seen.contains(&Position::of(i as u8, j as u8)) && !self.path.contains
-                    (&Position::of(i as u8, j as u8)) {
+                    (&position) {
                         _write.and(write!(f, "{}", " ".on_red()))
-                    } else if self.path.contains(&Position::of(i as u8, j as u8)) {
+                    } else if self.path.contains(&position) {
                         _write.and( write!(f, "{}", "\u{00B7}".on_green()))
                     } else {
                         _write.and( write!(f, "{}", " ".on_white()))

@@ -20,10 +20,8 @@ impl Maze {
             let row = isize::from(position.row) + i;
             for j in column_start_index..column_end_index {
                 let column = isize::from(position.column) + j;
-                if (i != 0 && j == 0) || (i == 0 && j != 0) {
-                    if self.grid[row as usize][column as usize] {
-                        children.push(Position::of(row as u8, column as u8))
-                    }
+                if (i != 0 && j == 0) || (i == 0 && j != 0) && self.grid[row as usize][column as usize] {
+                    children.push(Position::of(row as u8, column as u8))
                 }
             }
             

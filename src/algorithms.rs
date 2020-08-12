@@ -96,17 +96,15 @@ fn search<T: Frontier>(maze: &Maze, mut frontier: T) -> (Node, HashSet<Position>
         let position = current.position;
         if current.position == maze.exit {
             break (current, explored);
-        } else {
-            if !explored.contains(&current.position) {
-                let neighbours: Vec<Box<Node>> = maze.get_neighbours(current.position).iter()
-                    .map
+        } else if !explored.contains(&current.position) {
+            let neighbours: Vec<Box<Node>> = maze.get_neighbours(current.position).iter()
+                .map
                     (|pos|
                         Box::new(Node {
                             parent: Some(Rc::new(current.to_owned())),
                             position: *pos
                         })).collect();
-                frontier.append(&mut VecDeque::from(neighbours));
-            }
+            frontier.append(&mut VecDeque::from(neighbours));
         }
         explored.insert(position);
     }
